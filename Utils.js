@@ -1,7 +1,7 @@
 import { redirect } from "react-router-dom";
 
 export async function requireAuth() {
-    console.log("balle balle ho gaya mera...");
+    console.log("It's working...");
     return redirect("/login");
 }
 
