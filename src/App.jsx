@@ -1,110 +1,112 @@
-import { useState } from 'react'
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
-import About from './Pages/About'
-import Home from './Pages/Home'
-import HostVans, {loader as HostVansLoader} from './Pages/Host/HostVans.jsx'
-import VanDetailPage, {loader as VanDetailLoader} from './Pages/Vans/VanDetailPage.jsx'
-import "../server.js"
-import Layout from './components/Layout.jsx'
-import Dashboard from './Pages/Host/Dashboard.jsx'
-import Income from './Pages/Host/Income.jsx'
-import Reviews from './Pages/Host/Reviews.jsx'
-import HostLayout from './components/HostLayout.jsx'
-import Vans, {loader as vansLoader} from './Pages/Vans/Vans.jsx'
-import HostVanDetail, {loader as HostVanDetailLoader} from './Pages/Host/HostVanDetail.jsx'
-import HostVanPhotos from './Pages/Host/HostVanPhotos.jsx'
-import HostVanPricing from './Pages/Host/HostVanPricing.jsx'
-import HostVansInfo from './Pages/Host/HostVansInfo.jsx'
-import NotFound from './Pages/NotFound.jsx'
-import Error from './components/Error.jsx'
-import Login from './Pages/Login.jsx'
-import { requireAuth } from '../Utils.js'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom"
+import Home from "./pages/Home"
+import About from "./pages/About"
+import Vans, { loader as vansLoader } from "./pages/Vans/Vans"
+import VanDetail, { loader as vanDetailLoader } from "./pages/Vans/VanDetailPage"
+import Dashboard, {loader as dashboardLoader} from "./pages/Host/Dashboard"
+import Income from "./pages/Host/Income"
+import Reviews from "./pages/Host/Reviews"
+import HostVans, { loader as hostVansLoader} from "./pages/Host/HostVans"
+import HostVanDetail, { loader as hostVanDetailLoader } from "./pages/Host/HostVanDetail"
+import HostVanInfo from "./pages/Host/HostVansInfo"
+import HostVanPricing from "./pages/Host/HostVanPricing"
+import HostVanPhotos from "./pages/Host/HostVanPhotos"
+import NotFound from "./pages/NotFound"
+import Login, {loader as loginLoader, action as loginAction}  from "./Pages/Login"
+import Layout from "./components/Layout"
+import HostLayout from "./components/HostLayout"
+import Error from "./components/Error"
 
+import "../server"
+import { requireAuth } from '../Utils';
 
-function App() {
-
-  const router = createBrowserRouter(createRoutesFromElements(
-    <Route path='/' element={<Layout/>}>
-    <Route index element={<Home/>}/>
-    <Route path='about' element={<About/>}/>
+const router = createBrowserRouter(createRoutesFromElements(
+  <Route path="/" element={<Layout />}>
+    <Route index element={<Home />} />
+    <Route path="about" element={<About />} />
     <Route
       path="login"
       element={<Login />}
+      loader={loginLoader}
+      action={loginAction}
     />
-  
-    <Route path='vans' >
-      <Route index element={<Vans/>} loader={vansLoader} errorElement={<Error/>}/> 
-      <Route 
-      path=':id' 
-      element={<VanDetailPage/>}
-      loader = {VanDetailLoader}
-      />
-    </Route>
+    <Route
+      path="vans"
+      element={<Vans />}
+      errorElement={<Error />}
+      loader={vansLoader}
+    />
+    <Route 
+      path="vans/:id" 
+      element={<VanDetail />} 
+      loader={vanDetailLoader}
+    />
 
-    <Route path='host' element={<HostLayout/>} loader={ requireAuth} >
+    <Route path="host" element={<HostLayout />} >
       <Route
-      index 
-      element={<Dashboard/>}
-      loader={ requireAuth}
+        index
+        element={<Dashboard />}
+        loader={dashboardLoader}
+        // errorElement={<Error />}
       />
-      
       <Route
-      path='income' 
-      element={<Income/>}
-      loader={ requireAuth}
+        path="income"
+        element={<Income />}
+        loader={async ({request}) => await requireAuth(request)}
+        errorElement={<Error />}
       />
-      
       <Route
-      path='review' 
-      element={<Reviews/>}
-      loader={ requireAuth}
+        path="reviews"
+        element={<Reviews />}
+        loader={async ({request}) => await requireAuth(request)}
+        errorElement={<Error />}
       />
-      
-
-      <Route 
-      path='vans' 
-      element={<HostVans/>}
-      loader={HostVansLoader}
+      <Route
+        path="vans"
+        element={<HostVans />}
+        loader={hostVansLoader}
+        errorElement={<Error />}
       />
-      
-      <Route 
-      path='vans/:id' 
-      element={<HostVanDetail/>}
-      loader={HostVanDetailLoader}
+      <Route
+        path="vans/:id"
+        element={<HostVanDetail />}
+        loader={hostVanDetailLoader}
+        errorElement={<Error />}
       >
-        
-        <Route 
-        index 
-        element={<HostVansInfo/>}
-        loader={ requireAuth}
+        <Route
+          index
+          element={<HostVanInfo />}
+          loader={async ({request}) => await requireAuth(request)}
         />
-        
-        <Route 
-        path='pricing' 
-        element={<HostVanPricing/>}
-        loader={ requireAuth}
+        <Route
+          path="pricing"
+          element={<HostVanPricing />}
+          loader={async ({request}) => await requireAuth(request)}
         />
-        
-        <Route 
-        path='photos' 
-        element={<HostVanPhotos/>}
-        loader={ requireAuth}
+        <Route
+          path="photos"
+          element={<HostVanPhotos />}
+          loader={async ({request}) => await requireAuth(request)}
         />
-        
       </Route>
     </Route>
-
-    <Route path='*' element={<NotFound/>}/>
+    <Route path="*" element={<NotFound />} />
   </Route>
-  ))
+))
 
+export default function App() {
   return (
-    <RouterProvider router={router}/>
-
+    <RouterProvider router={router} />
   )
 }
 
-export default App
-
-
-
+ReactDOM
+  .createRoot(document.getElementById('root'))
+  .render(<App />);

@@ -4,14 +4,12 @@ import { getHostVans } from "../../../api"
 import { requireAuth } from "../../../Utils"
 
 
-
-export async function loader({params}) {
-    await requireAuth()
+export async function loader({ params, request }) {
+    await requireAuth(request)
     return getHostVans(params.id)
 }
 
 export default function HostVanDetail() {
-    const { id } = useParams()
     const currentVan = useLoaderData()
 
     const activeStyles = {
@@ -20,15 +18,6 @@ export default function HostVanDetail() {
         color: "#161616"
     }
 
-    React.useEffect(() => {
-        fetch(`/api/host/vans/${id}`)
-            .then(res => res.json())
-            .then(data => setCurrentVan(data.vans))
-    }, [])
-
-    if (!currentVan) {
-        return <h1>Loading...</h1>
-    }
     return (
         <section>
             <Link
@@ -72,7 +61,7 @@ export default function HostVanDetail() {
                         Photos
                     </NavLink>
                 </nav>
-                <Outlet context={{currentVan}}/>
+                <Outlet context={{ currentVan }} />
             </div>
         </section>
     )

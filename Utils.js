@@ -1,12 +1,11 @@
-import { redirect } from "react-router-dom";
+import { redirect } from "react-router-dom"
 
-export async function requireAuth() {
-    console.log("It's working...");
-    return redirect("/login");
+export async function requireAuth(request) {
+    const pathname = new URL (request.url).pathname
+    const isLoggedIn = localStorage.getItem("loggedin");
+    
+    if (!isLoggedIn) {
+        console.log(`Working babe...`);
+        return redirect(`/login?message=You must log in first&redirectTo=${pathname}`)
+    }
 }
-
-// const isLoggedIn = false
-// if (!isLoggedIn) {
-//     console.log(`balle balle`);
-//     return redirect("/login")
-// }

@@ -13,8 +13,6 @@ function VanDetailPage() {
     const search = location.state?.search || "";
     const type = location.state?.type || "all";
     
-    
-    
 
     return (
         <div className="van-detail-container">
